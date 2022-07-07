@@ -174,14 +174,14 @@ public class StreamConfigurationView extends LinearLayout {
 
         mActualMMapView = (TextView) findViewById(R.id.actualMMap);
         mRequestedMMapView = (CheckBox) findViewById(R.id.requestedMMapEnable);
-        boolean mmapSupported = NativeEngine.isMMapSupported();
+        boolean mmapSupported = true;
         mRequestedMMapView.setEnabled(mmapSupported);
         mRequestedMMapView.setChecked(mmapSupported);
 
         mActualExclusiveView = (TextView) findViewById(R.id.actualExclusiveMode);
         mRequestedExclusiveView = (CheckBox) findViewById(R.id.requestedExclusiveMode);
 
-        boolean mmapExclusiveSupported = NativeEngine.isMMapExclusiveSupported();
+        boolean mmapExclusiveSupported = true;
         mRequestedExclusiveView.setEnabled(mmapExclusiveSupported);
         mRequestedExclusiveView.setChecked(mmapExclusiveSupported);
 

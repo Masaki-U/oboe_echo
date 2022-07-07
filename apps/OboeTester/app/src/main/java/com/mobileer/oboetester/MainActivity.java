@@ -188,20 +188,8 @@ public class MainActivity extends BaseOboeTesterActivity {
         Intent intent = null;
         if (bundle.containsKey(KEY_TEST_NAME)) {
             String testName = bundle.getString(KEY_TEST_NAME);
-            if (VALUE_TEST_NAME_LATENCY.equals(testName)) {
-                intent = new Intent(this, RoundTripLatencyActivity.class);
-                intent.putExtras(bundle);
-            } else if (VALUE_TEST_NAME_GLITCH.equals(testName)) {
-                intent = new Intent(this, ManualGlitchActivity.class);
-                intent.putExtras(bundle);
-            } else if (VALUE_TEST_NAME_DATA_PATHS.equals(testName)) {
-                intent = new Intent(this, TestDataPathsActivity.class);
-                intent.putExtras(bundle);
-            } else if (VALUE_TEST_NAME_INPUT.equals(testName)) {
+            if (VALUE_TEST_NAME_INPUT.equals(testName)) {
                 intent = new Intent(this, TestInputActivity.class);
-                intent.putExtras(bundle);
-            } else if (VALUE_TEST_NAME_OUTPUT.equals(testName)) {
-                intent = new Intent(this, TestOutputActivity.class);
                 intent.putExtras(bundle);
             }
         }
@@ -230,50 +218,8 @@ public class MainActivity extends BaseOboeTesterActivity {
                 ", burst = " + audioManagerFramesPerBurst);
     }
 
-    public void onLaunchTestOutput(View view) {
-        launchTestActivity(TestOutputActivity.class);
-    }
-
-    public void onLaunchTestInput(View view) {
-        launchTestThatDoesRecording(TestInputActivity.class);
-    }
-
-    public void onLaunchTapToTone(View view) {
-        launchTestThatDoesRecording(TapToToneActivity.class);
-    }
-
-    public void onLaunchRecorder(View view) {
-        launchTestThatDoesRecording(RecorderActivity.class);
-    }
-
     public void onLaunchEcho(View view) {
         launchTestThatDoesRecording(EchoActivity.class);
-    }
-
-    public void onLaunchRoundTripLatency(View view) {
-        launchTestThatDoesRecording(RoundTripLatencyActivity.class);
-    }
-
-    public void onLaunchManualGlitchTest(View view) {
-        launchTestThatDoesRecording(ManualGlitchActivity.class);
-    }
-
-    public void onLaunchAutoGlitchTest(View view) { launchTestThatDoesRecording(AutomatedGlitchActivity.class); }
-
-    public void onLaunchTestDisconnect(View view) {
-        launchTestThatDoesRecording(TestDisconnectActivity.class);
-    }
-
-    public void onLaunchTestDataPaths(View view) {
-        launchTestThatDoesRecording(TestDataPathsActivity.class);
-    }
-
-    public void onLaunchTestDeviceReport(View view)  {
-        launchTestActivity(DeviceReportActivity.class);
-    }
-
-    public void onLaunchExtratests(View view) {
-        launchTestActivity(ExtraTestsActivity.class);
     }
 
     private void applyUserOptions() {

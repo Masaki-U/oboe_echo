@@ -16,14 +16,11 @@
 
 package com.mobileer.oboetester;
 
-import android.util.Log;
-
-class AudioInputTester extends AudioStreamTester{
+class AudioInputTester extends AudioStreamTester {
     private static AudioInputTester mInstance;
 
     private AudioInputTester() {
         super();
-        Log.i(TapToToneActivity.TAG, "create OboeAudioStream ---------");
 
         mCurrentAudioStream = new OboeAudioInputStream();
         requestedConfiguration.setDirection(StreamConfiguration.DIRECTION_INPUT);

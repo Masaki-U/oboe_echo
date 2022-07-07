@@ -29,12 +29,16 @@ import android.widget.RadioButton;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Test Oboe Capture
  */
 
-public class TestInputActivity  extends TestAudioActivity {
+public class TestInputActivity extends TestAudioActivity {
 
     protected AudioInputTester mAudioInputTester;
     private static final int NUM_VOLUME_BARS = 4;
@@ -44,9 +48,13 @@ public class TestInputActivity  extends TestAudioActivity {
     private WorkloadView mWorkloadView;
 
     public native void setMinimumFramesBeforeRead(int frames);
+
     public native int saveWaveFile(String absolutePath);
 
-    @Override boolean isOutput() { return false; }
+    @Override
+    boolean isOutput() {
+        return false;
+    }
 
     @Override
     protected void inflateActivity() {
@@ -144,11 +152,11 @@ public class TestInputActivity  extends TestAudioActivity {
 
 
     public void setupAGC(int sessionId) {
-        AutomaticGainControl effect =  AutomaticGainControl.create(sessionId);
+        AutomaticGainControl effect = AutomaticGainControl.create(sessionId);
     }
 
     public void setupAEC(int sessionId) {
-        AcousticEchoCanceler effect =  AcousticEchoCanceler.create(sessionId);
+        AcousticEchoCanceler effect = AcousticEchoCanceler.create(sessionId);
     }
 
     @Override
@@ -175,7 +183,13 @@ public class TestInputActivity  extends TestAudioActivity {
     private File createFileName() {
         // Get directory and filename
         File dir = getExternalFilesDir(Environment.DIRECTORY_MUSIC);
-        return new File(dir, "oboe_" +  getWaveTag() + "_" + AutomatedTestRunner.getTimestampString() + ".wav");
+        return new File(dir, "oboe_" + getWaveTag() + "_" + getTimestampString() + ".wav");
+    }
+
+    public static String getTimestampString() {
+        DateFormat df = new SimpleDateFormat("yyyyMMdd-HHmmss");
+        Date now = Calendar.getInstance().getTime();
+        return df.format(now);
     }
 
     public void shareWaveFile() {

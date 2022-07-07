@@ -23,6 +23,12 @@ import android.widget.Button;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
+import com.mobileer.oboetester.AudioOutputTester;
+import com.mobileer.oboetester.ExponentialTaper;
+import com.mobileer.oboetester.NativeSniffer;
+import com.mobileer.oboetester.R;
+import com.mobileer.oboetester.TestInputActivity;
+
 import java.io.IOException;
 
 /**

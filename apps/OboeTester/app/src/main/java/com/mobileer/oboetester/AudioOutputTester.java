@@ -33,7 +33,6 @@ public class AudioOutputTester extends AudioStreamTester {
 
     private AudioOutputTester() {
         super();
-        Log.i(TapToToneActivity.TAG, "create OboeAudioOutputStream ---------");
         mOboeAudioOutputStream = new OboeAudioOutputStream();
         mCurrentAudioStream = mOboeAudioOutputStream;
         requestedConfiguration.setDirection(StreamConfiguration.DIRECTION_OUTPUT);

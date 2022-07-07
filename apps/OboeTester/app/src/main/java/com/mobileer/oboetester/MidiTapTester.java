@@ -95,7 +95,6 @@ public class MidiTapTester extends MidiDeviceService {
             } else if (command == MidiConstants.STATUS_NOTE_OFF) {
                 noteOff(data[1]);
             }
-            Log.i(TapToToneActivity.TAG, "MIDI command = " + command);
         }
     }
 

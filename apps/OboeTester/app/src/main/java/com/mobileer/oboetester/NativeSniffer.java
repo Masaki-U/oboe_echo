@@ -20,7 +20,7 @@ import android.app.Activity;
 import android.os.Handler;
 import android.os.Looper;
 
-abstract class NativeSniffer implements Runnable {
+public abstract class NativeSniffer implements Runnable {
     public static final int SNIFFER_UPDATE_PERIOD_MSEC = 100;
     public static final int SNIFFER_UPDATE_DELAY_MSEC = 200;
     private final Activity activity;
