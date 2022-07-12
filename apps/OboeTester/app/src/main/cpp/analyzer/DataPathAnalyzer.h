@@ -81,10 +81,6 @@ public:
         mMaxMagnitude = 0.0;
     }
 
-    double getMaxMagnitude() {
-        return mMaxMagnitude;
-    }
-
 private:
     double  mPreviousPhaseOffset = 0.0;
     double  mPhaseTolerance = 2 * M_PI  / 48;

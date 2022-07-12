@@ -46,7 +46,6 @@
 #include "FullDuplexAnalyzer.h"
 #include "FullDuplexEcho.h"
 #include "FullDuplexStream.h"
-#include "analyzer/GlitchAnalyzer.h"
 #include "analyzer/DataPathAnalyzer.h"
 #include "InputStreamCallbackAnalyzer.h"
 #include "MultiChannelRecording.h"
@@ -467,19 +466,11 @@ public:
 
     void configureBuilder(bool isInput, oboe::AudioStreamBuilder &builder) override;
 
-    virtual int32_t getState() { return -1; }
-    virtual int32_t getResult() { return -1; }
-    virtual bool isAnalyzerDone() { return false; }
-
     void setMinimumFramesBeforeRead(int32_t numFrames) override {
         getFullDuplexAnalyzer()->setMinimumFramesBeforeRead(numFrames);
     }
 
     virtual FullDuplexAnalyzer *getFullDuplexAnalyzer() = 0;
-
-    int32_t getResetCount() {
-        return getFullDuplexAnalyzer()->getLoopbackProcessor()->getResetCount();
-    }
 
 protected:
     void createRecording() override {
@@ -546,21 +537,6 @@ public:
         return mLatencyAnalyzer.get();
     }
 
-    int32_t getState() override {
-        return getLatencyAnalyzer()->getState();
-    }
-
-    int32_t getResult() override {
-        return getLatencyAnalyzer()->getState(); // TODO This does not look right.
-    }
-
-    bool isAnalyzerDone() override {
-        if (!mAnalyzerLaunched) {
-            mAnalyzerLaunched = launchAnalysisIfReady();
-        }
-        return mLatencyAnalyzer->isDone();
-    }
-
     FullDuplexAnalyzer *getFullDuplexAnalyzer() override {
         return (FullDuplexAnalyzer *) mFullDuplexLatency.get();
     }
@@ -580,8 +556,6 @@ public:
         return false;
     }
 
-    jdouble measureTimestampLatency();
-
 protected:
     void finishOpen(bool isInput, oboe::AudioStream *oboeStream) override;
 
@@ -598,38 +572,10 @@ private:
 class ActivityGlitches : public ActivityFullDuplex {
 public:
 
-    oboe::Result startStreams() override {
-        return mFullDuplexGlitches->start();
-    }
-
     void configureBuilder(bool isInput, oboe::AudioStreamBuilder &builder) override;
-
-    GlitchAnalyzer *getGlitchAnalyzer() {
-        return &mGlitchAnalyzer;
-    }
-
-    int32_t getState() override {
-        return getGlitchAnalyzer()->getState();
-    }
-
-    int32_t getResult() override {
-        return getGlitchAnalyzer()->getResult();
-    }
-
-    bool isAnalyzerDone() override {
-        return mGlitchAnalyzer.isDone();
-    }
-
-    FullDuplexAnalyzer *getFullDuplexAnalyzer() override {
-        return (FullDuplexAnalyzer *) mFullDuplexGlitches.get();
-    }
 
 protected:
     void finishOpen(bool isInput, oboe::AudioStream *oboeStream) override;
-
-private:
-    std::unique_ptr<FullDuplexAnalyzer>   mFullDuplexGlitches{};
-    GlitchAnalyzer  mGlitchAnalyzer;
 };
 
 /**
@@ -739,9 +685,6 @@ public:
             case ActivityType::RoundTripLatency:
                 currentActivity = &mActivityRoundTripLatency;
                 break;
-            case ActivityType::Glitches:
-                currentActivity = &mActivityGlitches;
-                break;
             case ActivityType::TestDisconnect:
                 currentActivity = &mActivityTestDisconnect;
                 break;
@@ -761,7 +704,6 @@ public:
     ActivityRecording            mActivityRecording;
     ActivityEcho                 mActivityEcho;
     ActivityRoundTripLatency     mActivityRoundTripLatency;
-    ActivityGlitches             mActivityGlitches;
     ActivityDataPath             mActivityDataPath;
     ActivityTestDisconnect       mActivityTestDisconnect;
 

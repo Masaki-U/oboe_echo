@@ -325,18 +325,12 @@ public:
 
     virtual std::string analyze() = 0;
 
-    virtual void printStatus() {};
-
     int32_t getResult() {
         return mResult;
     }
 
     void setResult(int32_t result) {
         mResult = result;
-    }
-
-    virtual bool isDone() {
-        return false;
     }
 
     virtual int save(const char *fileName) {
@@ -355,10 +349,6 @@ public:
 
     int32_t getSampleRate() const {
         return mSampleRate;
-    }
-
-    int32_t getResetCount() const {
-        return mResetCount;
     }
 
     /** Called when not enough input frames could be read after synchronization.
@@ -386,37 +376,7 @@ public:
      */
     virtual void setup() = 0;
 
-    virtual int32_t getProgress() const = 0;
-
     virtual int getState() const = 0;
-
-    // @return latency in frames
-    virtual int32_t getMeasuredLatency() const = 0;
-
-    /**
-     * This is an overall confidence in the latency result based on correlation, SNR, etc.
-     * @return probability value between 0.0 and 1.0
-     */
-    double getMeasuredConfidence() const {
-        // Limit the ratio and prevent divide-by-zero.
-        double noiseSignalRatio = getSignalRMS() <= getBackgroundRMS()
-                                  ? 1.0 : getBackgroundRMS() / getSignalRMS();
-        // Prevent high background noise and low signals from generating false matches.
-        double adjustedConfidence = getMeasuredCorrelation() - noiseSignalRatio;
-        return std::max(0.0, adjustedConfidence);
-    }
-
-    /**
-     * Cross correlation value for the noise pulse against
-     * the corresponding position in the normalized recording.
-     *
-     * @return value between -1.0 and 1.0
-     */
-    virtual double getMeasuredCorrelation() const = 0;
-
-    virtual double getBackgroundRMS() const = 0;
-
-    virtual double getSignalRMS() const = 0;
 
     virtual bool hasEnoughData() const = 0;
 };
@@ -470,14 +430,6 @@ public:
         return mAudioRecording.isFull();
     }
 
-    bool isDone() override {
-        return mState == STATE_DONE;
-    }
-
-    int32_t getProgress() const override {
-        return mAudioRecording.size();
-    }
-
     std::string analyze() override {
         std::stringstream report;
         report << "PulseLatencyAnalyzer ---------------\n";
@@ -501,10 +453,6 @@ public:
             mSignalRMS = calculateRootMeanSquare(
                     &mAudioRecording.getData()[mLatencyReport.latencyInFrames], mPulse.size())
                          / gain;
-            if (getMeasuredConfidence() < getMinimumConfidence()) {
-                report << "   ERROR - confidence too low!";
-                newResult = ERROR_CONFIDENCE;
-            }
 
             double latencyMillis = kMillisPerSecond * (double) mLatencyReport.latencyInFrames
                                    / getSampleRate();
@@ -512,10 +460,6 @@ public:
                    << mLatencyReport.latencyInFrames << "\n";
             report << LOOPBACK_RESULT_TAG "latency.msec           = " << std::setw(8)
                    << latencyMillis << "\n";
-            report << LOOPBACK_RESULT_TAG "latency.confidence     = " << std::setw(8)
-                   << getMeasuredConfidence() << "\n";
-            report << LOOPBACK_RESULT_TAG "latency.correlation     = " << std::setw(8)
-                   << getMeasuredCorrelation() << "\n";
         }
         mState = STATE_DONE;
         if (getResult() == RESULT_OK) {
@@ -523,30 +467,6 @@ public:
         }
 
         return report.str();
-    }
-
-    int32_t getMeasuredLatency() const override {
-        return mLatencyReport.latencyInFrames;
-    }
-
-    double getMeasuredCorrelation() const override {
-        return mLatencyReport.correlation;
-    }
-
-    double getBackgroundRMS() const override {
-        return mBackgroundRMS;
-    }
-
-    double getSignalRMS() const override {
-        return mSignalRMS;
-    }
-
-    bool isRecordingComplete() {
-        return mState == STATE_GOT_DATA;
-    }
-
-    void printStatus() override {
-        ALOGD("latency: st = %d = %s", mState, convertStateToText(mState));
     }
 
     result_code processInputFrame(const float *frameData, int channelCount) override {

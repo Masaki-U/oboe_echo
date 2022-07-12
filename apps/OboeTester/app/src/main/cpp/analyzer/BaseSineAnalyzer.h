@@ -23,7 +23,6 @@
 #include <iostream>
 
 #include "InfiniteRecording.h"
-#include "LatencyAnalyzer.h"
 
 /**
  * Output a steady sine wave and analyze the return signal.
@@ -46,28 +45,8 @@ public:
         mScaledTolerance = mMagnitude * mTolerance;
     }
 
-    double getPhaseOffset() {
-        return mPhaseOffset;
-    }
-
-    double getMagnitude() const {
-        return mMagnitude;
-    }
-
-    void setInputChannel(int inputChannel) {
-        mInputChannel = inputChannel;
-    }
-
     int getInputChannel() const {
         return mInputChannel;
-    }
-
-    void setOutputChannel(int outputChannel) {
-        mOutputChannel = outputChannel;
-    }
-
-    int getOutputChannel() const {
-        return mOutputChannel;
     }
 
     void setNoiseAmplitude(double noiseAmplitude) {
@@ -76,14 +55,6 @@ public:
 
     double getNoiseAmplitude() const {
         return mNoiseAmplitude;
-    }
-
-    double getTolerance() {
-        return mTolerance;
-    }
-
-    void setTolerance(double tolerance) {
-        mTolerance = tolerance;
     }
 
     // advance and wrap phase
